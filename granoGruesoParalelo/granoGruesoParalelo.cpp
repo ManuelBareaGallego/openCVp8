@@ -45,7 +45,7 @@ int main(void)
 	String ventana_dst3 = "Ventana imagen procesada 3";
 	String ventana_dst4 = "Ventana imagen procesada 4";
 
-	src = imread("test.jpg", CV_LOAD_IMAGE_COLOR); // Read a JPG file
+	src = imread("test2.jpg", CV_LOAD_IMAGE_COLOR); // Read a JPG file
 	dst1 = src.clone();
 	dst2 = src.clone();
 	dst3 = src.clone();

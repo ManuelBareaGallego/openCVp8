@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
 	//time = omp_get_wtime();
 
-	src = imread("test.jpg", CV_LOAD_IMAGE_COLOR); // Read a JPG file
+	src = imread("test2.jpg", CV_LOAD_IMAGE_COLOR); // Read a JPG file
 
 	if (src.data == NULL)  // si no se pudo cargar ninguna imagen, mostrar un texto de error en ambas imágenes
 	{
