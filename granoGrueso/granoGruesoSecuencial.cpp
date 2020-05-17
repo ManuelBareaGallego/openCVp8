@@ -85,18 +85,6 @@ int main(int argc, char** argv)
 
 	}
 
-	namedWindow(ventana_src, WINDOW_NORMAL); // Create a window for display.
-	namedWindow(ventana_dst1, WINDOW_NORMAL); // Create a window for display.
-	namedWindow(ventana_dst2, WINDOW_NORMAL);
-	namedWindow(ventana_dst3, WINDOW_NORMAL);
-	namedWindow(ventana_dst4, WINDOW_NORMAL);
-
-	imshow(ventana_src, src);   // Mostrar imagen original
-	imshow(ventana_dst1, dst1);   // Mostrar imagen procesada 
-	imshow(ventana_dst2, dst2);   // Mostrar imagen procesada 
-	imshow(ventana_dst3, dst3);   // Mostrar imagen procesada 
-	imshow(ventana_dst4, dst4);   // Mostrar imagen procesada
-
 	auto n = iterCrono.size();
 	float average = 0.0f;
 	if (n != 0) {
@@ -110,6 +98,20 @@ int main(int argc, char** argv)
 
 
 	printf("\nPress key to close output window...");
+
+	namedWindow(ventana_src, WINDOW_NORMAL); // Create a window for display.
+	namedWindow(ventana_dst1, WINDOW_NORMAL); // Create a window for display.
+	namedWindow(ventana_dst2, WINDOW_NORMAL);
+	namedWindow(ventana_dst3, WINDOW_NORMAL);
+	namedWindow(ventana_dst4, WINDOW_NORMAL);
+
+	imshow(ventana_src, src);   // Mostrar imagen original
+	imshow(ventana_dst1, dst1);   // Mostrar imagen procesada 
+	imshow(ventana_dst2, dst2);   // Mostrar imagen procesada 
+	imshow(ventana_dst3, dst3);   // Mostrar imagen procesada 
+	imshow(ventana_dst4, dst4);   // Mostrar imagen procesada
+
+	
 
 	waitKey(0);
 	destroyWindow(ventana_src); //destroy the created window
