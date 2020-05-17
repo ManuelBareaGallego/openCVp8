@@ -1,42 +1,43 @@
-//SPD_P11_plantillaOpenMP.cpp
+///////////////////////////////////////////////////////////////////////
+// Dpto ATC. Universidad de Sevilla. http://www.atc.us.es 
+//    Ejemplo de aplicación con OpenCV y medida del tiempo de ejecución
+//    usando La biblioteca QueryPerfomanceTiming (hay dos versiones)
+// (c)2020 Miguel Angel Rodriguez Jodar. Día 57 de confinamiento.
+//
+//---------------------------------------------------------------------
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/opencv.hpp>
-#include <iostream>
-#include <omp.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+#include <omp.h>  // para el soporte OpenMP
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include <numeric>
+
 
 using namespace cv;
 using namespace std;
 
-#ifdef __cplusplus 
-#define ourImread(filename, isColor) cvLoadImage(filename, isColor)
-#else
-#define ourImread(filename, isColor) imread(filename, isColor)
-#endif
-
-
-int threshold_value = 0;
-int const max_BINARY_value = 255;
-int threshold_type = 3;
+//--------------------------------------------------------
+// Funciones de procesado de imagenes
 
 Mat procesado1(Mat img);
 Mat procesado2(Mat img);
 Mat procesado3(Mat img);
 Mat procesado4(Mat img);
-
 //--------------------------------------------------------
 // Funciones de procesado de tiempo
 double crono;
 vector<double > iterCrono;
 
-int main(int argc, char** argv)
-{
 
-
+int main(void)
+{	                
 	Mat src, dst1, dst2, dst3, dst4;
 	String ventana_src = "Ventana imagen original";
 	String ventana_dst1 = "Ventana imagen procesada 1";
@@ -44,9 +45,11 @@ int main(int argc, char** argv)
 	String ventana_dst3 = "Ventana imagen procesada 3";
 	String ventana_dst4 = "Ventana imagen procesada 4";
 
-	//time = omp_get_wtime();
-
 	src = imread("test.jpg", CV_LOAD_IMAGE_COLOR); // Read a JPG file
+	dst1 = src.clone();
+	dst2 = src.clone();
+	dst3 = src.clone();
+	dst4 = src.clone();
 
 	if (src.data == NULL)  // si no se pudo cargar ninguna imagen, mostrar un texto de error en ambas imágenes
 	{
@@ -63,21 +66,36 @@ int main(int argc, char** argv)
 			0.75,
 			CV_RGB(0, 0, 0),
 			2);
-		dst1 = src;
 	}
 
-	int nIt = 4;
+	int nIt = 20;
 
 	for (int i = 0; i < nIt; i++) {
+		omp_set_num_threads(4);
 
 		// Iniciamos el cronómetro para cada iteración
 		crono = omp_get_wtime();
 
 		// Procesado de imagenes
-		dst1 = procesado1(src);
-		dst2 = procesado2(src);
-		dst3 = procesado3(src);
-		dst4 = procesado4(src);
+#pragma omp parallel sections default(none) shared(src, dst1, dst2, dst3, dst4)
+		{
+#pragma omp section
+			{
+				dst1 = procesado1(src);
+			}
+#pragma omp section
+			{
+				dst2 = procesado2(src);
+			}
+#pragma omp section
+			{
+				dst3 = procesado3(src);
+			}
+#pragma omp section
+			{
+				dst4 = procesado4(src);
+			}
+		}
 
 		//guarda el tiempo de procesado en el vector iterCrono
 		double  wtime = omp_get_wtime() - crono;
@@ -85,11 +103,11 @@ int main(int argc, char** argv)
 
 	}
 
-	namedWindow(ventana_src, WINDOW_NORMAL); // Create a window for display.
-	namedWindow(ventana_dst1, WINDOW_NORMAL); // Create a window for display.
-	namedWindow(ventana_dst2, WINDOW_NORMAL);
-	namedWindow(ventana_dst3, WINDOW_NORMAL);
-	namedWindow(ventana_dst4, WINDOW_NORMAL);
+	namedWindow(ventana_src, WINDOW_AUTOSIZE); // Create a window for display.
+	namedWindow(ventana_dst1, WINDOW_AUTOSIZE); // Create a window for display.
+	namedWindow(ventana_dst2, WINDOW_AUTOSIZE);
+	namedWindow(ventana_dst3, WINDOW_AUTOSIZE);
+	namedWindow(ventana_dst4, WINDOW_AUTOSIZE);
 
 	imshow(ventana_src, src);   // Mostrar imagen original
 	imshow(ventana_dst1, dst1);   // Mostrar imagen procesada 
@@ -103,21 +121,21 @@ int main(int argc, char** argv)
 		average = accumulate(iterCrono.begin(), iterCrono.end(), 0.0f) / n;
 	}
 
-	cout << "\nTiempo medio de ejecucion algoritmo secuencial:\n\n" + to_string(average) << std::endl;
+	cout << "\nTiempo medio de ejecucion algoritmo paralelo:\n\n" + to_string(average) << std::endl;
 
 	double best = *min_element(iterCrono.begin(), iterCrono.end());
-	cout << "\nTiempo minimo de ejecucion algoritmo secuencial:\n\n" + to_string(best) << std::endl;
+	cout << "\nTiempo minimo de ejecucion algoritmo paralelo:\n\n" + to_string(best) << std::endl;
 
 
 	printf("\nPress key to close output window...");
 
-	waitKey(0);
+	waitKey(0); // Wait for any keystroke in the window
+
 	destroyWindow(ventana_src); //destroy the created window
 	destroyWindow(ventana_dst1); //destroy the created window
 	destroyWindow(ventana_dst2); //destroy the created window
 	destroyWindow(ventana_dst3); //destroy the created window
 	destroyWindow(ventana_dst4); //destroy the created window
-
 
 	return 0;
 }
@@ -180,5 +198,3 @@ Mat procesado4(Mat img) {
 	return res;
 
 }
-
-
