@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7acc76fb-1bf5-4a33-8953-717a021547c6}</ProjectGuid>
     <RootNamespace>granoGrueso</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectName>granoGrueso</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -62,9 +62,11 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalIncludeDirectories>C:\opencv\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opencv_world3410d.lib;%(AdditionalDependencies);powrprof.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc14\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "C:\opencv\build\x64\vc15\bin\opencv_world3410d.dll" $(OutDir)
@@ -104,7 +106,7 @@ copy /Y "C:\opencv\build\x64\vc15\bin\opencv_ffmpeg3410_64.dll" $(OutDir)
   <ItemGroup>
     <ClCompile Include="QueryPerformanceTiming_rdtsc.cpp" />
     <ClCompile Include="QueryPerformanceTiming_windows_hpc.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="granoGruesoSecuencial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="cat_eye.jpg" />
