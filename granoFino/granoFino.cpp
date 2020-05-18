@@ -26,7 +26,7 @@ double crono;
 vector<double > iterCrono;
 Mat src, dst;
 double alpha = 2.0;
-int beta = 50;
+int beta = 0;
 
 int main(void)
 {	                
@@ -34,14 +34,11 @@ int main(void)
 	String ventana_src = "Ventana imagen original";
 	String ventana_dst = "Ventana imagen procesada";
 
-	
-
 	namedWindow(ventana_src, WINDOW_AUTOSIZE); // Create a window for display.
 	namedWindow(ventana_dst, WINDOW_AUTOSIZE); // Create a window for display.
 
 	src = imread("test.jpg", CV_LOAD_IMAGE_COLOR); // Read a JPG file
-	dst = Mat::zeros(src.size(), src.type());
-	threshold(src, src, 0, 255, THRESH_BINARY);
+	dst = src.clone();
 	//threshold(res, res, threshold_value, max_BINARY_value, threshold_type);
 
 	if (src.data == NULL)  // si no se pudo cargar ninguna imagen, mostrar un texto de error en ambas imágenes
@@ -62,7 +59,15 @@ int main(void)
 		dst = src;
 	}
 
-	dst = procesado1(src);
+	//procesado imagen
+	for (int y = 0; y < src.rows; y++) {
+		for (int x = 0; x < src.cols; x++) {
+			for (int c = 0; c < 3; c++) {
+				dst.at<Vec3b>(y, x)[c] =
+					saturate_cast<uchar>(alpha*(src.at<Vec3b>(y, x)[c]) + beta);
+			}
+		}
+	}
 
 	imshow(ventana_src, src);   // Mostrar imagen original
 	imshow(ventana_dst, dst);   // Mostrar imagen procesada (en este ejemplo en realidad no se le ha hecho nada)
@@ -77,18 +82,3 @@ int main(void)
 }
 
 
-Mat procesado1(Mat img) {
-	Mat res;
-	/// Do the operation new_image(i,j) = alpha*image(i,j) + beta
-	for (int y = 0; y < img.rows; y++) {
-		for (int x = 0; x < img.cols; x++) {
-			for (int c = 0; c < 3; c++) {
-				dst.at<Vec3b>(y, x)[c] =
-					saturate_cast<uchar>(alpha*(img.at<Vec3b>(y, x)[c]) + beta);
-			}
-		}
-	}
-	
-
-	return res;
-}
